@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'杭工e家 刷分机器人'
+'杭工e家 刷积分机器人'
 
 __author__ = '杨斌'
 
@@ -17,11 +17,8 @@ from logger import logger
 
 User = namedtuple('User',['username','password'])
 # 用户名和密码
-users = [User('15068181441','Admin1992'),
-        User('17557285523','cdh65432125'),
-        User('15867192953','zsr911'),
-        User('15868100796','zxcvbnm1994'),
-        User('15888809203','080268lcq')]
+users = [User('你的用户名','你的密码'),
+        User('你的用户名','你的密码')]
 
 # 登录url
 loginUrl = 'http://app.hzgh.org:8002/unionApp/interf/front/U/U004'
