@@ -38,17 +38,20 @@ headers = {'User-Agent':'okhttp/3.8.1','Content-Type': 'text/plain;charset=utf-8
 def login(username, password):
     global loginUrl
     global headers
-    param = {'app_verno':'2.1.4',
-        'channel':'02',
-        'login_name':username,
-        'pwd':password,
-        'model':'Android SDK built for x86_64',
-        'key':'channel,term_id,term_sys,app_ver_no,term_sys_ver,pwd,root,login_name,model',
-        'root':'0',
-        'term_id':'000000000000000',
-        'sign':'536C57614E1D6195E661BF1F7C87D0AD96648599',
-        'term_sys':'2',
-        'term_sys_ver':'7.0'}
+    param = {'app_ver_no':'2.1.4',
+            'channel':'02',
+            'login_name':username,
+            'pwd':password,
+            'model':'Android SDK built for x86_64',
+            'key':'channel,term_id,term_sys,app_ver_no,term_sys_ver,pwd,root,login_name,model',
+            'root':'0',
+            'term_id':'000000000000000',
+            'sign':'536C57614E1D6195E661BF1F7C87D0AD96648599',
+            'term_sys':'2',
+            'term_sys_ver':'7.0'}
+    param['sign'] = sign(str(param['channel'])+str(param['term_id'])+str(param['term_sys'])+
+        str(param['app_ver_no'])+str(param['term_sys_ver'])+str(param['pwd'])+str(param['root'])+
+        str(param['login_name'])+str(param['model']))
     r = requests.post(loginUrl,data=json.dumps(param),headers=headers)
     if r.status_code == requests.codes.ok:
         result = r.json()
@@ -58,10 +61,15 @@ def login(username, password):
         return result
     pass
 
+# 阅读新闻积分申请
 def readNews(loginInfo):
     global headers
-    param = {"channel":"02","ses_id":loginInfo['ses_id'],"type":"5","login_name":loginInfo['login_name'],"key":"channel,ses_id,type,login_name","sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
-    #param['sign'] = sign(str(param['login_name'])+str(param['type'])+str(param['ses_id'])+str(param['channel']))
+    param = {"channel":"02",
+            "ses_id":loginInfo['ses_id'],
+            "type":"5",
+            "login_name":loginInfo['login_name'],
+            "key":"channel,ses_id,type,login_name",
+            "sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
     param['sign'] = sign(str(param['channel'])+str(param['ses_id'])+str(param['type'])+str(param['login_name']))
     r = requests.post(newsUrl, data=json.dumps(param),headers=headers)
     if r.status_code == requests.codes.ok:
