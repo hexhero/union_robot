@@ -14,8 +14,12 @@ fmt = '%(asctime)s - %(levelname)s - %(message)s'
 formatter = logging.Formatter(fmt)  # 实例化formatter
 handler.setFormatter(formatter)  # 为handler添加formatter
 
+sh = logging.StreamHandler()#往屏幕上输出
+sh.setFormatter(formatter) #设置屏幕上显示的格式
+
 log = logging.getLogger()  # 获取logger
 log.addHandler(handler)  # 为logger添加handler
+log.addHandler(sh) 
 log.setLevel(logging.INFO)
 
 class logger(object):

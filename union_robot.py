@@ -21,13 +21,17 @@ users = [User('15068181441','Admin1992'),
         User('17557285523','cdh65432125'),
         User('15867192953','zsr911'),
         User('15868100796','zxcvbnm1994'),
-        User('15888809203','080268lcq')]
+        User('15888809203','080268lcq'),
+        User('15270238857','wg123456789'),
+        User('15757178794','z314581947')]
+
+
 
 # 登录url
 loginUrl = 'http://app.hzgh.org:8002/unionApp/interf/front/U/U004'
 
-# 新闻加积分
-newsUrl = 'http://app.hzgh.org:8002/unionApp/interf/front/U/U042'
+# 积分接口
+gradeUrl = 'http://app.hzgh.org:8002/unionApp/interf/front/U/U042'
 
 # sign 盐
 salt = '123456'
@@ -57,7 +61,7 @@ def login(username, password):
         result = r.json()
         result['cookies'] = r.cookies['JSESSIONID']
         headers['cookies']='JSESSIONID=%s' % r.cookies['JSESSIONID']
-        logger.info(result['msg'],'积分+1')
+        logger.info(result['msg'],'+1')
         return result
     pass
 
@@ -71,11 +75,45 @@ def readNews(loginInfo):
             "key":"channel,ses_id,type,login_name",
             "sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
     param['sign'] = sign(str(param['channel'])+str(param['ses_id'])+str(param['type'])+str(param['login_name']))
-    r = requests.post(newsUrl, data=json.dumps(param),headers=headers)
+    r = requests.post(gradeUrl, data=json.dumps(param),headers=headers)
     if r.status_code == requests.codes.ok:
         result = r.json()       
-        logger.info(result['msg']+'积分+1')
+        logger.info(result['msg']+'+1')
     
+# 其他一天只能获取一次的积分接口
+def otherObtainGrade(loginInfo):
+    global headers
+    for tp in [8,2,7]:
+        param = {"channel":"02",
+                "ses_id":loginInfo['ses_id'],
+                "type":tp,
+                "login_name":loginInfo['login_name'],
+                "key":"channel,ses_id,type,login_name",
+                "sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
+        param['sign'] = sign(str(param['channel'])+str(param['ses_id'])+str(param['type'])+str(param['login_name']))
+        r = requests.post(gradeUrl, data=json.dumps(param),headers=headers)
+        if r.status_code == requests.codes.ok:
+            result = r.json()       
+            logger.info(result['msg']+'+1')
+        pass
+
+# 无限积分接口
+def infiniteGrade(loginInfo):
+    global headers
+    for n in range(0,10):
+        param = {"channel":"02",
+                "ses_id":loginInfo['ses_id'],
+                "type":'9',
+                "login_name":loginInfo['login_name'],
+                "key":"channel,ses_id,type,login_name",
+                "sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
+        param['sign'] = sign(str(param['channel'])+str(param['ses_id'])+str(param['type'])+str(param['login_name']))
+        r = requests.post(gradeUrl, data=json.dumps(param),headers=headers)
+        if r.status_code == requests.codes.ok:
+            result = r.json()       
+            logger.info(result['msg']+'+1')
+        pass
+
 def sign(paramStr):
     paramStr = paramStr + salt
     md5 = hashlib.md5()
@@ -92,12 +130,15 @@ def main():
         logger.info(user.username,'开始登录>>>>>>>>>')
         loginInfo = login(user.username,user.password)
         for n in range(0,4): #点击新闻4次 每天查看新闻最多能够获取4个积分
-            readNews(loginInfo)
+            readNews(loginInfo)           
             time.sleep(3) #每次刷分后暂停3秒
+        otherObtainGrade(loginInfo)
         logger.info(user.username,'<<<<<<<<<<<<操作结束')
 
 if __name__ == '__main__':
-    logger.info('-----------------程序启动成功 每天早上9点刷分-----------------')
+    logger.info('-----------------首次启动执行-----------------')
+    main()
+    logger.info('-----------------定时器_每天早上9点刷分-----------------')
     schedule.every().day.at('09:00').do(main) #定时任务 每天早上9点刷票
     while True:
         schedule.run_pending()
