@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'杭工e家 刷分机器人'
+'杭工e家 刷积分机器人'
 
 __author__ = '杨斌'
 
