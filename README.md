@@ -1,5 +1,5 @@
 # union_robot
-## 该BUG已提交至官方. 仅供学习!
+## 该BUG已提交至官方. 仅供学习!(官方升级,已失效)
 杭工e家 app 自动签到获取积分机器人<br/>
 
-`python3` 依赖库 `request` `schedule`
+## 最新hg215_robot 不支持用户名和密码模式,只能抓包获取信息
