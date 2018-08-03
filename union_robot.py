@@ -68,17 +68,18 @@ def login(username, password):
 # 阅读新闻积分申请
 def readNews(loginInfo):
     global headers
-    param = {"channel":"02",
-            "ses_id":loginInfo['ses_id'],
-            "type":"5",
-            "login_name":loginInfo['login_name'],
-            "key":"channel,ses_id,type,login_name",
-            "sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
-    param['sign'] = sign(str(param['channel'])+str(param['ses_id'])+str(param['type'])+str(param['login_name']))
-    r = requests.post(gradeUrl, data=json.dumps(param),headers=headers)
-    if r.status_code == requests.codes.ok:
-        result = r.json()       
-        logger.info(result['msg']+'+1')
+    for n in range(0,4):
+        param = {"channel":"02",
+                "ses_id":loginInfo['ses_id'],
+                "type":"5",
+                "login_name":loginInfo['login_name'],
+                "key":"channel,ses_id,type,login_name",
+                "sign":"69EC28F56311300262521FAD7B14E5C8E89DB9BC"}
+        param['sign'] = sign(str(param['channel'])+str(param['ses_id'])+str(param['type'])+str(param['login_name']))
+        r = requests.post(gradeUrl, data=json.dumps(param),headers=headers)
+        if r.status_code == requests.codes.ok:
+            result = r.json()       
+            logger.info(result['msg']+'+1')
     
 # 其他一天只能获取一次的积分接口
 def otherObtainGrade(loginInfo):
@@ -97,10 +98,10 @@ def otherObtainGrade(loginInfo):
             logger.info(result['msg']+'+1')
         pass
 
-# 无限积分接口
-def infiniteGrade(loginInfo):
+# 举报积分接口
+def informGrade(loginInfo):
     global headers
-    for n in range(0,10):
+    for n in range(0,4):
         param = {"channel":"02",
                 "ses_id":loginInfo['ses_id'],
                 "type":'9',
@@ -129,10 +130,9 @@ def main():
     for user in users:
         logger.info(user.username,'开始登录>>>>>>>>>')
         loginInfo = login(user.username,user.password)
-        for n in range(0,4): #点击新闻4次 每天查看新闻最多能够获取4个积分
-            readNews(loginInfo)           
-            time.sleep(3) #每次刷分后暂停3秒
+        readNews(loginInfo)           
         otherObtainGrade(loginInfo)
+        informGrade(loginInfo)
         logger.info(user.username,'<<<<<<<<<<<<操作结束')
 
 if __name__ == '__main__':
