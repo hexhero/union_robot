@@ -17,13 +17,9 @@ from logger import logger
 
 User = namedtuple('User',['username','password'])
 # 用户名和密码
-users = [User('15068181441','Admin1992'),
-        User('17557285523','cdh65432125'),
-        User('15867192953','zsr911'),
-        User('15868100796','zxcvbnm1994'),
-        User('15888809203','080268lcq'),
-        User('15270238857','wg123456789'),
-        User('15757178794','z314581947')]
+users = [User('xxx','xxx'),
+        User('xxx','xxx'),
+        User('xxx','xxx')]
 
 
 
